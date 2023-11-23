@@ -58,3 +58,62 @@ const smallGreenProducts = pf.filterBySizeAndColor(
 for (let p of smallGreenProducts) {
   console.log(`${p.name} is small and green`);
 }
+
+/*  
+what if you wanted add the filter filerBySizeOrColor with addition of other properties 
+we have write multiple methods like filterBySizeAndColor this leads to redundant work
+
+Better approach 
+*/
+class ColorSpecification {
+  constructor(color) {
+    this.color = color;
+  }
+
+  isStatisfied(item) {
+    return item.color === this.color;
+  }
+}
+
+class SizeSpecification {
+  constructor(size) {
+    this.size = size;
+  }
+
+  isStatisfied(item) {
+    return this.size === item.size;
+  }
+}
+
+class AndSpecificatin {
+  constructor(...specs) {
+    this.specs = specs;
+  }
+  isStatisfied(item) {
+    return this.specs.every((x) => x.isStatisfied(item));
+  }
+}
+
+class BetterFilter {
+  filter(items, spec) {
+    return items.filter((x) => spec.isStatisfied(x));
+  }
+}
+
+let bf = new BetterFilter();
+
+console.log(`\nGreen products (new):\n`);
+let cs = new ColorSpecification(COLORS.green);
+for (let p of bf.filter(products, cs)) {
+  console.log(`${p.name} is green`);
+}
+
+let ls = new SizeSpecification(SIZE.large);
+for (let p of bf.filter(products, ls)) {
+  console.log(`${p.name} is large`);
+}
+
+let lgs = new AndSpecificatin(cs, ls);
+for (let p of bf.filter(products, lgs)) {
+  console.log(`${p.name} is green and large`);
+}
