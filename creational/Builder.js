@@ -52,7 +52,7 @@ class ComputerBuilder {
   }
 }
 
-//Director  
+//Director
 class ComputerDirector {
   constructorGamingComputer(builder) {
     return builder
@@ -85,4 +85,91 @@ gamingComputer.display();
 
 
 
+//Example 2
 
+class Person {
+  constructor() {
+    //address info
+    this.city = this.street = this.postCode = "";
+
+    //company info
+    this.company = this.position = "";
+    this.annualIncome = 0;
+  }
+  toString() {
+    return `Person lives at ${this.city} ${this.street} ${this.postCode} 
+    and works at ${this.company} as ${this.position} with annual income of ${this.annualIncome}`;
+  }
+}
+
+class PersonBuilder {
+  constructor(person = new Person()) {
+    this.person = person;
+  }
+
+  get lives() {
+    return new PersonAddressBuilder(this.person);
+  }
+
+  get works() {
+    return new PersonJobBuilder(this.person);
+  }
+
+  build() {
+    return this.person;
+  }
+}
+
+class PersonAddressBuilder extends PersonBuilder {
+  constructor(person) {
+    super(person);
+  }
+
+  in(city) {
+    this.person.city = city;
+    return this;
+  }
+
+  at(street) {
+    this.person.street = street;
+    return this;
+  }
+
+  withPostalCode(postalCode) {
+    this.person.postCode = postalCode;
+    return this;
+  }
+}
+
+class PersonJobBuilder extends PersonBuilder {
+  constructor(person) {
+    super(person);
+  }
+
+  at(companyName) {
+    this.person.companyName = companyName;
+    return this;
+  }
+
+  asA(position) {
+    this.person.position = position;
+    return this;
+  }
+
+  earning(annualIncome) {
+    this.person.annualIncome = annualIncome;
+    return this;
+  }
+}
+
+const pb = new PersonBuilder();
+const person = pb.lives
+  .in("Kathmandu")
+  .at("Baneshwor")
+  .withPostalCode("4600")
+  .works.at("Fusemachines")
+  .asA("Software Engineer")
+  .earning("1000")
+  .build();
+
+console.log(person.toString());
